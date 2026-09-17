@@ -1,0 +1,48 @@
+name: Hello API CI
+
+on:
+  push:
+    paths:
+      - "hello-api/**"
+      - ".github/workflows/hello-api.yml"
+  pull_request:
+    paths:
+      - "hello-api/**"
+      - ".github/workflows/hello-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-build:
+    name: Verify and build hello API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache-dependency-path: hello-api/go.mod
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build
+        run: go build -o hello-api ./cmd/hello-api
+
+      - name: Upload Linux binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-api-linux
+          path: hello-api/hello-api
+          if-no-files-found: error

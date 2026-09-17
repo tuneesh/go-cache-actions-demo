@@ -4,6 +4,10 @@ This is a deliberately small, repeatable comparison for Go CI caching. It is
 not an application; its packages have two-second tests so the work performed is
 visible in a GitHub Actions log.
 
+The separate [hello API](hello-api/README.md) is the beginner-friendly starting
+point: one small web service and one straightforward CI workflow. Learn that
+workflow before using the cache comparison below.
+
 ## What the workflow compares
 
 Every push starts these jobs in parallel:
