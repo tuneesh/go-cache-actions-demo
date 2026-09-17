@@ -8,9 +8,14 @@ import (
 // NewHandler returns the HTTP routes exposed by the hello API.
 func NewHandler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /", home)
 	mux.HandleFunc("GET /health", health)
 	mux.HandleFunc("GET /greet", greet)
 	return mux
+}
+
+func home(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"service": "hello-api"})
 }
 
 func health(w http.ResponseWriter, _ *http.Request) {

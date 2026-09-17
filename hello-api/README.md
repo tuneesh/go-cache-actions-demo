@@ -17,4 +17,5 @@ curl http://localhost:8080/health
 curl 'http://localhost:8080/greet?name=Tuneesh'
 ```
 
-Expected responses are `{"status":"ok"}` and `{"message":"hello, Tuneesh"}`.
+Expected responses are `{"service":"hello-api"}`, `{"status":"ok"}`, and
+`{"message":"hello, Tuneesh"}`.

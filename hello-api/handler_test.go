@@ -19,6 +19,19 @@ func TestHealth(t *testing.T) {
 	}
 }
 
+func TestHome(t *testing.T) {
+	response := httptest.NewRecorder()
+
+	NewHandler().ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", response.Code, http.StatusOK)
+	}
+	if body := response.Body.String(); body != "{\"service\":\"hello-api\"}\n" {
+		t.Fatalf("body = %q, want service JSON", body)
+	}
+}
+
 func TestGreet(t *testing.T) {
 	response := httptest.NewRecorder()
 
