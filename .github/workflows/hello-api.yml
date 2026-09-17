@@ -75,3 +75,36 @@ jobs:
           name: hello-api-macos-arm64
           path: hello-api/hello-api-macos-arm64
           if-no-files-found: error
+
+  smoke-test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the Linux build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: hello-api-linux-amd64
+          path: artifact
+
+      - name: Start the API and check its health endpoint
+        shell: bash
+        run: |
+          chmod +x artifact/hello-api-linux-amd64
+          ./artifact/hello-api-linux-amd64 > hello-api.log 2>&1 &
+          api_pid=$!
+          trap 'kill "$api_pid" 2>/dev/null || true; cat hello-api.log' EXIT
+
+          for attempt in {1..10}; do
+            response="$(curl --fail --silent --show-error http://127.0.0.1:8080/health)" && break
+            sleep 1
+          done
+
+          test "$response" = '{"status":"ok"}'
+
+      - name: Upload the API log if the smoke test fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-api-smoke-log
+          path: hello-api.log
+          if-no-files-found: ignore

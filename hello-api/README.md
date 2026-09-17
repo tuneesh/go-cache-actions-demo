@@ -32,3 +32,10 @@ The GitHub Actions build job creates two downloadable executables:
 
 They are separate because a compiled Go binary targets one operating system
 and CPU architecture at a time.
+
+## CI smoke test
+
+After the build job uploads the Linux binary, a separate `smoke-test` job
+downloads that exact artifact, starts it, and checks `/health`. It does not
+check out source code or compile Go: this demonstrates how jobs pass a real
+deliverable through an artifact rather than a cache.
