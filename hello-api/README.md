@@ -35,6 +35,16 @@ workflow uses both files as its Go-cache fingerprint, so changing a dependency
 causes a new cache entry instead of reusing one built for an older dependency
 set.
 
+## Cache lab
+
+`Hello API Cache Lab` is a manually triggered workflow that compares the
+standard `actions/setup-go` cache with `cloudx-io/setup-go` job-isolated caches
+for the same vet, test, and build commands. It is deliberately separate from
+the normal CI pipeline. This API is tiny, so use its test-command duration and
+the `(cached)` marker as learning evidence, not as a performance claim. In a
+production workflow, pin third-party Actions to reviewed commit SHAs instead
+of a moving major-version tag.
+
 ## CI artifacts
 
 The GitHub Actions build job creates two downloadable executables:
