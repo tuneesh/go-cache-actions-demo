@@ -46,6 +46,12 @@ network speed. The native job demonstrates that CloudX is primarily a
 convenient implementation of an explicit Actions cache policy, rather than a
 new kind of Go compiler cache.
 
+Treat a single warm run as evidence to investigate, not a correctness
+guarantee. This repository's Actions history deliberately includes safety runs
+that change an assertion and confirm the test executes. When evaluating this on
+a production repository, use Go's `GODEBUG=gocachetest=1` diagnostic for a
+short trial and verify that a changed package is not reported as cached.
+
 For production, pin third-party Actions to reviewed commit SHAs rather than a
 moving tag, and treat all caches as performance-only. Pass compiled deliverables
 between jobs with artifacts, never via a cache.
