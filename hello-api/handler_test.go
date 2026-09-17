@@ -55,6 +55,16 @@ func TestGreetShout(t *testing.T) {
 	}
 }
 
+func TestGreetReverse(t *testing.T) {
+	response := httptest.NewRecorder()
+
+	NewHandler().ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/greet?name=Tuneesh&reverse=true", nil))
+
+	if body := response.Body.String(); body != "{\"message\":\"hseenuT ,olleh\"}\n" {
+		t.Fatalf("body = %q, want reversed greeting JSON", body)
+	}
+}
+
 func TestRequestID(t *testing.T) {
 	response := httptest.NewRecorder()
 

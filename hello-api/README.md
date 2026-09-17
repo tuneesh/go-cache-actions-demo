@@ -17,13 +17,15 @@ curl http://localhost:8080/
 curl http://localhost:8080/health
 curl 'http://localhost:8080/greet?name=Tuneesh'
 curl 'http://localhost:8080/greet?name=Tuneesh&shout=true'
+curl 'http://localhost:8080/greet?name=Tuneesh&reverse=true'
 curl http://localhost:8080/request-id
 ```
 
 Expected responses are `{"service":"hello-api"}`, `{"status":"ok"}`, and
 `{"message":"hello, Tuneesh"}`. Add `shout=true` to receive
 `{"message":"HELLO, TUNEESH"}`. `/request-id` returns a fresh UUID, supplied
-by the external `github.com/google/uuid` dependency.
+by the external `github.com/google/uuid` dependency. Add `reverse=true` to
+receive `{"message":"hseenuT ,olleh"}`.
 
 ## Dependencies and cache keys
 
