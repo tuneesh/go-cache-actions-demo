@@ -17,11 +17,21 @@ curl http://localhost:8080/
 curl http://localhost:8080/health
 curl 'http://localhost:8080/greet?name=Tuneesh'
 curl 'http://localhost:8080/greet?name=Tuneesh&shout=true'
+curl http://localhost:8080/request-id
 ```
 
 Expected responses are `{"service":"hello-api"}`, `{"status":"ok"}`, and
 `{"message":"hello, Tuneesh"}`. Add `shout=true` to receive
-`{"message":"HELLO, TUNEESH"}`.
+`{"message":"HELLO, TUNEESH"}`. `/request-id` returns a fresh UUID, supplied
+by the external `github.com/google/uuid` dependency.
+
+## Dependencies and cache keys
+
+`go.mod` declares that this API needs `github.com/google/uuid v1.6.0`.
+`go.sum` records the checksum Go expects when it downloads that module. The CI
+workflow uses both files as its Go-cache fingerprint, so changing a dependency
+causes a new cache entry instead of reusing one built for an older dependency
+set.
 
 ## CI artifacts
 

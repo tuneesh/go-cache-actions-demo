@@ -26,7 +26,9 @@ jobs:
         with:
           go-version-file: hello-api/go.mod
           cache: true
-          cache-dependency-path: hello-api/go.mod
+          cache-dependency-path: |
+            hello-api/go.mod
+            hello-api/go.sum
       - run: go vet ./...
 
   test:
@@ -40,7 +42,9 @@ jobs:
         with:
           go-version-file: hello-api/go.mod
           cache: true
-          cache-dependency-path: hello-api/go.mod
+          cache-dependency-path: |
+            hello-api/go.mod
+            hello-api/go.sum
       - run: go test ./...
 
   build:
@@ -55,7 +59,9 @@ jobs:
         with:
           go-version-file: hello-api/go.mod
           cache: true
-          cache-dependency-path: hello-api/go.mod
+          cache-dependency-path: |
+            hello-api/go.mod
+            hello-api/go.sum
       - name: Build Linux x64 binary
         run: GOOS=linux GOARCH=amd64 go build -o hello-api-linux-amd64 ./cmd/hello-api
 

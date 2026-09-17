@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 // NewHandler returns the HTTP routes exposed by the hello API.
@@ -12,6 +14,7 @@ func NewHandler() http.Handler {
 	mux.HandleFunc("GET /", home)
 	mux.HandleFunc("GET /health", health)
 	mux.HandleFunc("GET /greet", greet)
+	mux.HandleFunc("GET /request-id", requestID)
 	return mux
 }
 
@@ -35,6 +38,10 @@ func greet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, map[string]string{"message": message})
+}
+
+func requestID(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"request_id": uuid.NewString()})
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {

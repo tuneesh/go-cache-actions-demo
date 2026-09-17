@@ -1,9 +1,12 @@
 package helloapi
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestHealth(t *testing.T) {
@@ -49,5 +52,21 @@ func TestGreetShout(t *testing.T) {
 
 	if body := response.Body.String(); body != "{\"message\":\"HELLO, TUNEESH\"}\n" {
 		t.Fatalf("body = %q, want uppercase greeting JSON", body)
+	}
+}
+
+func TestRequestID(t *testing.T) {
+	response := httptest.NewRecorder()
+
+	NewHandler().ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/request-id", nil))
+
+	var body struct {
+		RequestID string `json:"request_id"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &body); err != nil {
+		t.Fatalf("response is not JSON: %v", err)
+	}
+	if _, err := uuid.Parse(body.RequestID); err != nil {
+		t.Fatalf("request_id = %q, want a UUID: %v", body.RequestID, err)
 	}
 }
