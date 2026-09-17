@@ -15,34 +15,46 @@ permissions:
   contents: read
 
 jobs:
-  verify-and-build:
-    name: Verify and build hello API
+  vet:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: hello-api
     steps:
-      - name: Check out source
-        uses: actions/checkout@v4
-
-      - name: Install Go
-        uses: actions/setup-go@v7
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
         with:
           go-version-file: hello-api/go.mod
-          cache-dependency-path: hello-api/go.mod
+          cache: false
+      - run: go vet ./...
 
-      - name: Vet
-        run: go vet ./...
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache: false
+      - run: go test ./...
 
-      - name: Test
-        run: go test ./...
-
-      - name: Build
-        run: go build -o hello-api ./cmd/hello-api
-
-      - name: Upload Linux binary
-        uses: actions/upload-artifact@v4
+  build:
+    needs: [vet, test]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache: false
+      - run: go build -o hello-api ./cmd/hello-api
+      - uses: actions/upload-artifact@v4
         with:
           name: hello-api-linux
           path: hello-api/hello-api
-          if-no-files-found: error
