@@ -5,6 +5,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: go-cache-demo-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -18,6 +22,7 @@ jobs:
         with:
           go-version: "1.25.0"
           cache: true
+          cache-dependency-path: go.mod
       - run: go vet ./...
 
   default-test:
@@ -29,6 +34,7 @@ jobs:
         with:
           go-version: "1.25.0"
           cache: true
+          cache-dependency-path: go.mod
       - name: Run package tests
         run: |
           time go test -v ./...
@@ -42,6 +48,7 @@ jobs:
         with:
           go-version: "1.25.0"
           cache: true
+          cache-dependency-path: go.mod
       - run: go build ./...
 
   isolated-lint:
@@ -53,6 +60,7 @@ jobs:
         with:
           go-version: "1.25.0"
           cache-key-prefix: lint
+          cache-dependency-path: go.mod
       - run: go vet ./...
 
   isolated-test:
@@ -64,6 +72,7 @@ jobs:
         with:
           go-version: "1.25.0"
           cache-key-prefix: test
+          cache-dependency-path: go.mod
       - name: Run package tests
         run: |
           time go test -v ./...
@@ -77,4 +86,27 @@ jobs:
         with:
           go-version: "1.25.0"
           cache-key-prefix: build
+          cache-dependency-path: go.mod
       - run: go build ./...
+
+  native-isolated-test:
+    name: Native job-isolated cache — test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.0"
+          cache: false
+      - name: Restore or save a test-only Go cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: native-go-test-${{ runner.os }}-${{ hashFiles('go.mod') }}-${{ github.run_id }}
+          restore-keys: |
+            native-go-test-${{ runner.os }}-${{ hashFiles('go.mod') }}-
+      - name: Run package tests
+        run: |
+          time go test -v ./...
