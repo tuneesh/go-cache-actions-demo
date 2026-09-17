@@ -56,8 +56,22 @@ jobs:
           go-version-file: hello-api/go.mod
           cache: true
           cache-dependency-path: hello-api/go.mod
-      - run: go build -o hello-api ./cmd/hello-api
-      - uses: actions/upload-artifact@v4
+      - name: Build Linux x64 binary
+        run: GOOS=linux GOARCH=amd64 go build -o hello-api-linux-amd64 ./cmd/hello-api
+
+      - name: Upload Linux x64 binary
+        uses: actions/upload-artifact@v4
         with:
-          name: hello-api-linux
-          path: hello-api/hello-api
+          name: hello-api-linux-amd64
+          path: hello-api/hello-api-linux-amd64
+          if-no-files-found: error
+
+      - name: Build macOS Apple-Silicon binary
+        run: GOOS=darwin GOARCH=arm64 go build -o hello-api-macos-arm64 ./cmd/hello-api
+
+      - name: Upload macOS Apple-Silicon binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-api-macos-arm64
+          path: hello-api/hello-api-macos-arm64
+          if-no-files-found: error
