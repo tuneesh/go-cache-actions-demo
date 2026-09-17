@@ -25,7 +25,8 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: hello-api/go.mod
-          cache: false
+          cache: true
+          cache-dependency-path: hello-api/go.mod
       - run: go vet ./...
 
   test:
@@ -38,7 +39,8 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: hello-api/go.mod
-          cache: false
+          cache: true
+          cache-dependency-path: hello-api/go.mod
       - run: go test ./...
 
   build:
@@ -52,7 +54,8 @@ jobs:
       - uses: actions/setup-go@v7
         with:
           go-version-file: hello-api/go.mod
-          cache: false
+          cache: true
+          cache-dependency-path: hello-api/go.mod
       - run: go build -o hello-api ./cmd/hello-api
       - uses: actions/upload-artifact@v4
         with:
