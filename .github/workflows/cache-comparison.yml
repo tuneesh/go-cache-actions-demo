@@ -1,0 +1,80 @@
+name: Compare Go cache strategies
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  default-lint:
+    name: Default cache — lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.0"
+          cache: true
+      - run: go vet ./...
+
+  default-test:
+    name: Default cache — test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.0"
+          cache: true
+      - name: Run package tests
+        run: |
+          time go test -v ./...
+
+  default-build:
+    name: Default cache — build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25.0"
+          cache: true
+      - run: go build ./...
+
+  isolated-lint:
+    name: Isolated cache — lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudx-io/setup-go@v1
+        with:
+          go-version: "1.25.0"
+          cache-key-prefix: lint
+      - run: go vet ./...
+
+  isolated-test:
+    name: Isolated cache — test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudx-io/setup-go@v1
+        with:
+          go-version: "1.25.0"
+          cache-key-prefix: test
+      - name: Run package tests
+        run: |
+          time go test -v ./...
+
+  isolated-build:
+    name: Isolated cache — build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudx-io/setup-go@v1
+        with:
+          go-version: "1.25.0"
+          cache-key-prefix: build
+      - run: go build ./...
