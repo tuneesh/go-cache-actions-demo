@@ -1,5 +1,5 @@
 package api
 
 func Version() string {
-	return "version-2"
+	return "version-3"
 }
