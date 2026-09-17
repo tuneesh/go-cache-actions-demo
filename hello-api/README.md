@@ -37,13 +37,20 @@ set.
 
 ## Cache lab
 
-`Hello API Cache Lab` is a manually triggered workflow that compares the
-standard `actions/setup-go` cache with `cloudx-io/setup-go` job-isolated caches
-for the same vet, test, and build commands. It is deliberately separate from
-the normal CI pipeline. This API is tiny, so use its test-command duration and
-the `(cached)` marker as learning evidence, not as a performance claim. In a
-production workflow, pin third-party Actions to reviewed commit SHAs instead
-of a moving major-version tag.
+`Hello API Cache Lab` is a manually triggered workflow that compares three
+options for the same vet, test, and build commands:
+
+- `actions/setup-go`'s built-in, shared Go cache.
+- Explicit `actions/cache` entries isolated by job type.
+- `cloudx-io/setup-go` entries isolated by job type.
+
+The explicit Actions cache is the apples-to-apples baseline for CloudX: it
+caches the same `GOMODCACHE` and `GOCACHE` directories but gives test, vet,
+and build their own keys. The lab is deliberately separate from normal CI.
+This API is tiny, so use its test-command duration and the `(cached)` marker as
+learning evidence, not as a performance claim. In a production workflow, pin
+third-party Actions to reviewed commit SHAs instead of a moving major-version
+tag.
 
 ## CI artifacts
 

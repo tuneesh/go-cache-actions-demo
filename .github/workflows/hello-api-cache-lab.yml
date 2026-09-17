@@ -63,6 +63,79 @@ jobs:
             hello-api/go.sum
       - run: go build ./cmd/hello-api
 
+  actions-cache-vet:
+    name: Actions cache isolated — vet
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache: false
+      - id: cache-paths
+        run: |
+          echo "gomodcache=$(go env GOMODCACHE)" >> "$GITHUB_OUTPUT"
+          echo "gocache=$(go env GOCACHE)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.cache-paths.outputs.gomodcache }}
+            ${{ steps.cache-paths.outputs.gocache }}
+          key: actions-cache-hello-api-vet-${{ runner.os }}-go1.25-${{ hashFiles('hello-api/go.mod', 'hello-api/go.sum') }}
+      - run: go vet ./...
+
+  actions-cache-test:
+    name: Actions cache isolated — test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache: false
+      - id: cache-paths
+        run: |
+          echo "gomodcache=$(go env GOMODCACHE)" >> "$GITHUB_OUTPUT"
+          echo "gocache=$(go env GOCACHE)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.cache-paths.outputs.gomodcache }}
+            ${{ steps.cache-paths.outputs.gocache }}
+          key: actions-cache-hello-api-test-${{ runner.os }}-go1.25-${{ hashFiles('hello-api/go.mod', 'hello-api/go.sum') }}
+      - name: Test and show elapsed time
+        run: time go test -v ./...
+
+  actions-cache-build:
+    name: Actions cache isolated — build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hello-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: hello-api/go.mod
+          cache: false
+      - id: cache-paths
+        run: |
+          echo "gomodcache=$(go env GOMODCACHE)" >> "$GITHUB_OUTPUT"
+          echo "gocache=$(go env GOCACHE)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.cache-paths.outputs.gomodcache }}
+            ${{ steps.cache-paths.outputs.gocache }}
+          key: actions-cache-hello-api-build-${{ runner.os }}-go1.25-${{ hashFiles('hello-api/go.mod', 'hello-api/go.sum') }}
+      - run: go build ./cmd/hello-api
+
   cloudx-vet:
     name: CloudX isolated cache — vet
     runs-on: ubuntu-latest
