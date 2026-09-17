@@ -41,3 +41,13 @@ func TestGreet(t *testing.T) {
 		t.Fatalf("body = %q, want greeting JSON", body)
 	}
 }
+
+func TestGreetShout(t *testing.T) {
+	response := httptest.NewRecorder()
+
+	NewHandler().ServeHTTP(response, httptest.NewRequest(http.MethodGet, "/greet?name=Tuneesh&shout=true", nil))
+
+	if body := response.Body.String(); body != "{\"message\":\"HELLO, TUNEESH\"}\n" {
+		t.Fatalf("body = %q, want uppercase greeting JSON", body)
+	}
+}

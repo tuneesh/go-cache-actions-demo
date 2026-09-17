@@ -3,6 +3,7 @@ package helloapi
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 )
 
 // NewHandler returns the HTTP routes exposed by the hello API.
@@ -28,7 +29,12 @@ func greet(w http.ResponseWriter, r *http.Request) {
 		name = "world"
 	}
 
-	writeJSON(w, http.StatusOK, map[string]string{"message": "hello, " + name})
+	message := "hello, " + name
+	if r.URL.Query().Get("shout") == "true" {
+		message = strings.ToUpper(message)
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"message": message})
 }
 
 func writeJSON(w http.ResponseWriter, status int, value any) {

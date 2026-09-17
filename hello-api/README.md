@@ -13,9 +13,12 @@ go run ./cmd/hello-api
 Then, in another terminal:
 
 ```bash
+curl http://localhost:8080/
 curl http://localhost:8080/health
 curl 'http://localhost:8080/greet?name=Tuneesh'
+curl 'http://localhost:8080/greet?name=Tuneesh&shout=true'
 ```
 
 Expected responses are `{"service":"hello-api"}`, `{"status":"ok"}`, and
-`{"message":"hello, Tuneesh"}`.
+`{"message":"hello, Tuneesh"}`. Add `shout=true` to receive
+`{"message":"HELLO, TUNEESH"}`.
